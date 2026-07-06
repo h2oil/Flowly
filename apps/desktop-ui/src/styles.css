@@ -1,0 +1,308 @@
+/* Visual spec: docs/plan/04-ux-spec.md §2. Radius is always height/2 — the
+   pill identity survives every state. Colors: base #0A0A0C @ 82%, live word
+   highlight pill rgba(90,200,250,.22), status greens/ambers per spec. In the
+   Tauri shell this renders on a transparent window; here the page plays the
+   role of the desktop. */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+:root {
+  --pill-bg: rgba(10, 10, 12, 0.82);
+  --border: rgba(255, 255, 255, 0.08);
+  --locked: #34c759;
+  --searching: #ffb340;
+  --accent: rgba(90, 200, 250, 0.22);
+  --spring: cubic-bezier(0.34, 1.3, 0.64, 1); /* ≈ stiffness 380 / damping 30 */
+}
+
+body {
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  background:
+    radial-gradient(1200px 500px at 50% -10%, #223047 0%, transparent 60%),
+    linear-gradient(180deg, #101418 0%, #0b0d10 100%);
+  min-height: 100vh;
+  color: #e8eaed;
+}
+
+.desktop {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.camera-hint {
+  margin-top: 6px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  user-select: none;
+}
+.camera-hint::before {
+  content: "●";
+  color: rgba(255, 255, 255, 0.5);
+  margin-right: 6px;
+}
+
+/* ---- the pill ---------------------------------------------------------- */
+
+.pill {
+  margin-top: 10px;
+  background: var(--pill-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  color: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition:
+    width 0.33s var(--spring),
+    height 0.33s var(--spring),
+    border-radius 0.33s var(--spring);
+}
+
+.pill--idle {
+  width: 190px;
+  height: 36px;
+  border-radius: 18px;
+  cursor: pointer;
+  opacity: 0.75;
+}
+.pill--idle:hover {
+  opacity: 1;
+}
+
+.pill--countdown {
+  width: 520px;
+  height: 44px;
+  border-radius: 22px;
+}
+
+.pill--active,
+.pill--done {
+  width: 640px;
+  height: 118px;
+  border-radius: 32px;
+}
+
+.pill--expanded {
+  height: 156px;
+}
+
+.pill__idle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.pill__glyph {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5ac8fa, #34c759);
+}
+
+.pill__countdown {
+  font-size: 24px;
+  font-weight: 700;
+  animation: beat 1s ease-out;
+}
+@keyframes beat {
+  0% {
+    transform: scale(1.15);
+    opacity: 0.4;
+  }
+  30% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.pill__stage {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 0 22px;
+}
+
+.pill__ghost {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 14px;
+  user-select: none;
+}
+
+.pill__done {
+  font-size: 12px;
+  color: var(--locked);
+  padding-bottom: 6px;
+}
+
+/* ---- focus window ------------------------------------------------------- */
+
+.focus {
+  flex: 1;
+  overflow: hidden;
+  mask-image: linear-gradient(180deg, transparent 0, #000 18%, #000 82%, transparent 100%);
+}
+
+.focus__scroller {
+  transition: transform 0.18s cubic-bezier(0.33, 1, 0.68, 1); /* 180ms easeOutCubic line steps */
+}
+
+.focus__line {
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  align-items: center;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
+.focus__line--past {
+  opacity: 0.38;
+}
+.focus__line--next {
+  opacity: 0.75;
+}
+
+.w {
+  padding: 0 2px;
+  border-radius: 6px;
+}
+.w--past {
+  color: rgba(255, 255, 255, 0.38);
+}
+.w--next {
+  color: rgba(255, 255, 255, 0.85);
+}
+.w--live {
+  color: #fff;
+  background: var(--accent);
+}
+.w--held {
+  background: rgba(255, 179, 64, 0.25); /* amber hold: lock lost, text holds still */
+}
+
+/* ---- waveform / listening indicator ------------------------------------ */
+
+.wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 18px;
+  flex: none;
+}
+.wave span {
+  width: 2px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--locked);
+  animation: bounce 0.9s ease-in-out infinite;
+}
+.wave--lost span,
+.wave--searching span {
+  background: var(--searching);
+  animation-duration: 1.6s;
+}
+.wave--paused span,
+.wave--done span {
+  background: rgba(255, 255, 255, 0.3);
+  animation-play-state: paused;
+}
+@keyframes bounce {
+  0%,
+  100% {
+    height: 5px;
+  }
+  50% {
+    height: 14px;
+  }
+}
+
+/* ---- expanded controls --------------------------------------------------- */
+
+.pill__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 22px 10px;
+  width: 100%;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  animation: fade 0.12s ease-out;
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+.pill__controls button {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  height: 24px;
+  min-width: 30px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.pill__controls button:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+.pill__controls button.on {
+  background: var(--accent);
+}
+.pill__wpm {
+  min-width: 56px;
+}
+.pill__state--tracking {
+  color: var(--locked);
+}
+.pill__state--lost,
+.pill__state--searching {
+  color: var(--searching);
+}
+.pill__state--paused {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Honor Windows reduce-motion: swap springs for quick fades. */
+@media (prefers-reduced-motion: reduce) {
+  .pill,
+  .focus__scroller {
+    transition-duration: 0.12s;
+    transition-timing-function: ease-out;
+  }
+  .wave span {
+    animation: none;
+  }
+}
+
+.demo-note {
+  margin-top: 48px;
+  max-width: 560px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.45);
+}
+.demo-note code {
+  color: rgba(255, 255, 255, 0.65);
+}

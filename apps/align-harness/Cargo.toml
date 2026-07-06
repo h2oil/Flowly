@@ -1,0 +1,11 @@
+[package]
+name = "align-harness"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+flowly-script = { path = "../../crates/flowly-script" }
+flowly-align = { path = "../../crates/flowly-align" }
+flowly-asr = { path = "../../crates/flowly-asr" }
+serde_json.workspace = true

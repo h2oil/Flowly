@@ -1,0 +1,10 @@
+[package]
+name = "flowly-align"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+flowly-script = { path = "../flowly-script" }
+flowly-asr = { path = "../flowly-asr" }
+serde.workspace = true

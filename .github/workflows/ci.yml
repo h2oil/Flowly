@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  engine:
+    name: Engine (tests + alignment gate)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Unit and scenario tests
+        run: cargo test --workspace
+      - name: Alignment regression gate (demo corpus)
+        run: |
+          cargo build -p align-harness
+          ./target/debug/align-harness run \
+            --script corpus/demo/script.md \
+            --hyp corpus/demo/hypotheses.jsonl \
+            --truth corpus/demo/truth.tsv \
+            --gate
+
+  ui:
+    name: Pill UI (typecheck + build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/desktop-ui
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/desktop-ui/package-lock.json
+      - run: npm ci
+      - run: npm run build
