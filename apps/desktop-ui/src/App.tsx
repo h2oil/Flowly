@@ -9,6 +9,7 @@ import { compileTokens, LiveEngine, speechRecognitionAvailable, type ScriptToken
 import { SimEngine } from "./engine/simEngine";
 import { importFile, importPaste } from "./importer/import";
 import { loadScripts, newId, removeScript, upsertScript, wordCount, type LibScript } from "./library";
+import { MicSetup } from "./pill/MicSetup";
 import { Pill, type PromptEngine } from "./pill/Pill";
 
 type View = { kind: "library" } | { kind: "prompt"; script: LibScript; mode: "voice" | "demo" };
@@ -71,8 +72,13 @@ function Prompter({
   onError: (message: string) => void;
 }) {
   const [ready, setReady] = useState<{ tokens: ScriptToken[]; engine: PromptEngine } | null>(null);
+  // Voice takes go through the mic-check step first: explicit permission
+  // prompt, device picker, live level meter.
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const needMic = mode === "voice" && !stream;
 
   useEffect(() => {
+    if (needMic) return;
     let cancelled = false;
     (async () => {
       try {
@@ -85,6 +91,7 @@ function Prompter({
         if (mode === "voice") {
           const live = new LiveEngine(script.body);
           live.onError = onError;
+          live.stream = stream;
           await live.prepare();
           engine = live;
         } else {
@@ -99,8 +106,9 @@ function Prompter({
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [script.id, mode]);
+  }, [script.id, mode, stream]);
 
+  if (needMic) return <MicSetup onReady={setStream} onCancel={onExit} />;
   if (!ready) return <div className="pill pill--countdown">…</div>;
   return <Pill tokens={ready.tokens} engine={ready.engine} live={mode === "voice"} onExit={onExit} />;
 }

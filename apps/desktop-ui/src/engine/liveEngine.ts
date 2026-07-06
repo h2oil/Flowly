@@ -82,7 +82,7 @@ interface SpeechRecognitionLike {
   onresult: ((event: SpeechResultEventLike) => void) | null;
   onerror: ((event: { error?: string }) => void) | null;
   onend: (() => void) | null;
-  start(): void;
+  start(track?: MediaStreamTrack): void;
   stop(): void;
 }
 
@@ -105,6 +105,10 @@ export class LiveEngine implements EngineFeed {
   private utteranceStart = 0;
   private active = false;
   onError: ((message: string) => void) | null = null;
+  /** Mic stream from the setup step. Its first audio track is handed to
+   * SpeechRecognition where supported (Chrome 136+); otherwise recognition
+   * uses the system default mic and the stream still proved permission. */
+  stream: MediaStream | null = null;
 
   constructor(private source: string) {}
 
@@ -179,22 +183,29 @@ export class LiveEngine implements EngineFeed {
       }
       // "no-speech" and "aborted" are routine; onend restarts us.
     };
-    rec.onend = () => {
-      // Chrome stops on long silence; keep listening while a take is active.
-      if (this.active) {
+    const begin = () => {
+      // Prefer the picked device's track (Chrome 136+); fall back to the
+      // system default mic for browsers without MediaStreamTrack support.
+      const track = this.stream?.getAudioTracks()[0];
+      if (track) {
         try {
-          rec.start();
+          rec.start(track);
+          return;
         } catch {
-          /* already started */
+          /* start(track) unsupported — fall through */
         }
       }
+      try {
+        rec.start();
+      } catch {
+        /* already started */
+      }
     };
-    try {
-      rec.start();
-    } catch {
-      this.onError?.("Could not start the microphone.");
-      return;
-    }
+    rec.onend = () => {
+      // Chrome stops on long silence; keep listening while a take is active.
+      if (this.active) begin();
+    };
+    begin();
 
     this.ticker = setInterval(() => {
       if (!this.aligner) return;
@@ -209,6 +220,8 @@ export class LiveEngine implements EngineFeed {
     this.recognition = null;
     if (this.ticker) clearInterval(this.ticker);
     this.ticker = null;
+    this.stream?.getTracks().forEach((t) => t.stop());
+    this.stream = null;
   }
 
   /** Manual override (restart sentence, nudge): always wins. */

@@ -79,7 +79,10 @@ const FAKE_SPEECH = `
   window.SpeechRecognition = FakeSpeechRecognition;
 `;
 
-const browser = await chromium.launch();
+const browser = await chromium.launch({
+  // Real getUserMedia path without a prompt: fake mic device + auto-grant.
+  args: ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"],
+});
 const page = await browser.newPage({ viewport: { width: 1000, height: 700 } });
 page.on("pageerror", (e) => check("no page errors", false, String(e)));
 await page.addInitScript(FAKE_SPEECH);
@@ -130,6 +133,17 @@ check("paste drops script tags", !pasted.includes("evil"));
 
 // ---- live voice: WASM aligner driven by fake speech ----
 await page.locator(".script", { hasText: "Flowly launch demo" }).getByText("● Start with voice").click();
+// Mic-check step: permission via getUserMedia (fake device), picker + meter.
+await page.waitForSelector('[data-testid="mic-setup"]', { timeout: 10000 });
+await page.waitForSelector('[data-testid="mic-select"]', { timeout: 10000 });
+await page
+  .waitForFunction(() => document.querySelectorAll('[data-testid="mic-select"] option').length >= 1, null, {
+    timeout: 10000,
+  })
+  .catch(() => {});
+const micCount = await page.locator('[data-testid="mic-select"] option').count();
+check("mic picker lists devices", micCount >= 1, `${micCount} device(s)`);
+await page.locator('[data-testid="mic-begin"]').click();
 await page.waitForSelector(".pill--active", { timeout: 15000 });
 check("voice take starts", true);
 
