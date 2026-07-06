@@ -10,8 +10,20 @@ import type { EngineEvent, EngineFeed, EngineListener, EngineState } from "./typ
 
 let wasmReady: Promise<unknown> | null = null;
 
+/** Decode the inlined data-URI wasm to bytes ourselves. Passing the URI
+ * through would make the generated init call fetch() on it, and strict CSPs
+ * (the hosted artifact) block fetch of data: URIs — "Failed to fetch". */
+function wasmBytes(uri: string): Uint8Array | string {
+  if (!uri.startsWith("data:")) return uri; // dev server path: let init fetch it
+  const b64 = uri.slice(uri.indexOf(",") + 1);
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+
 export function ensureWasm(): Promise<unknown> {
-  if (!wasmReady) wasmReady = initWasm({ module_or_path: wasmUrl });
+  if (!wasmReady) wasmReady = initWasm({ module_or_path: wasmBytes(wasmUrl) });
   return wasmReady;
 }
 
