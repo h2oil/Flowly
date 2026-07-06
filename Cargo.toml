@@ -5,6 +5,7 @@ members = [
   "crates/flowly-align",
   "crates/flowly-asr",
   "crates/flowly-store",
+  "crates/flowly-wasm",
   "apps/align-harness",
 ]
 

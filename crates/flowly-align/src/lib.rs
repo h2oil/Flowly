@@ -344,7 +344,7 @@ impl Aligner {
             // pre-retake words anchor the DP forward and drown the backward
             // candidate. A recent-words-only alignment sees the retake.
             if let Some(o) = self.align_recent() {
-                if o.confidence >= self.cfg.theta_track && o.trail_content >= 2 {
+                if o.confidence >= self.cfg.theta_track && o.trail_content >= self.cfg.reanchor_content {
                     self.try_backward(&o, now_ms, events);
                     if self.state == State::Tracking
                         && self.cursor.map(|c| c + 2 >= o.cand).unwrap_or(false)
@@ -395,11 +395,13 @@ impl Aligner {
         )
     }
 
-    /// Backward (retake) candidate: needs an anchor and a second confirmation
-    /// before the cursor may ever move back.
+    /// Backward (retake) candidate: needs a real anchor — at least 3
+    /// consecutive exact/phonetic content-word matches (fuzzy matches break
+    /// the trail, so ad-lib garbage can't fabricate one) — plus a second
+    /// confirmation before the cursor may ever move back.
     fn try_backward(&mut self, o: &AlignOutcome, now_ms: u64, events: &mut Vec<AlignerEvent>) {
         let Some(cur) = self.cursor else { return };
-        if cur <= o.cand + 2 || o.trail_content < 2 {
+        if cur <= o.cand + 2 || o.trail_content < self.cfg.reanchor_content || o.trail_words < 3 {
             return;
         }
         match self.pending_back {

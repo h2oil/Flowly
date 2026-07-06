@@ -6,7 +6,18 @@ You load a script. Flowly listens to your microphone, aligns what you actually s
 
 ## Status
 
-🔩 **Rev1 — the engine and the pill.** The two components the plan says the product lives or dies on are built and tested:
+🎙️ **Rev2 — a working program.** The web build is now a functioning voice-following prompter: script library, file importer, and live voice tracking running the real Rust alignment engine compiled to WASM.
+
+New in Rev2:
+
+- **Live voice following in the browser** (`crates/flowly-wasm` + `apps/desktop-ui/src/engine/liveEngine.ts`) — the actual `flowly-align` engine compiled to WebAssembly, fed by Chrome/Edge speech recognition. Read the script aloud and the pill follows you — pauses, fillers, misrecognitions, ad-libs and all. (Demo rig: the browser recognizer is a stand-in for the on-device sherpa-onnx path the Windows build ships.)
+- **Working importer** — `.docx` (Word, and "Download as .docx" from Google Docs/Notion), `.pdf` (text-layer extraction with review warning; scanned PDFs rejected with a clear error), `.txt`, `.md`, `.rtf`, `.html`, and clipboard paste that preserves headings/bold from the HTML flavor. Everything converts to Prompter Markdown, normalized (smart quotes, zero-width chars, `SPEAKER:` labels → unspoken stage notes). All in-browser; nothing uploads.
+- **Script library** — import, edit, delete; stored locally (localStorage in the web build; the SQLite store backs the desktop build).
+- **End-to-end test rig** (`apps/desktop-ui/e2e/run.mjs`) — drives the built app in headless Chromium: imports real `.docx`/`.pdf`/`.txt` fixtures, verifies conversion, then runs a take with a scripted fake SpeechRecognition and asserts the WASM aligner tracks, holds through an ad-lib (LOST), and never retracts beyond the dead-reckoning cap. This rig caught and fixed a real engine bug (ad-lib garbage fuzzy-matching a backward anchor) and a UI bug (speculative-drift snap-back on lock loss).
+
+### Rev1 — the engine and the pill
+
+The two components the plan says the product lives or dies on, built and tested:
 
 - **Alignment engine** (`crates/flowly-align`) — pure, deterministic Rust: banded fuzzy/phonetic local alignment with the four-state TRACKING/LOST/SEARCHING/PAUSED controller. 16 scenario tests cover verbatim reading, fillers, misrecognitions, ad-lib freezes, forward skips, retake jump-backs, silence pauses, spoken numbers, and a fuzz invariant (*the cursor never moves backward without a Retake event*).
 - **Script compiler** (`crates/flowly-script`) — Prompter Markdown → TokenMap with byte-offset source spans and spoken-variant lattices (`$3.5M` → "three point five million dollars", `2026` → "twenty twenty six", `3rd` → "third", `SQL` → "s q l").
@@ -30,11 +41,18 @@ cargo build -p align-harness
 ./target/debug/align-harness run --script corpus/demo/script.md \
     --hyp /tmp/h.jsonl --truth /tmp/t.tsv --gate
 
-# Pill UI demo (browser stand-in for the transparent Tauri window)
+# The app (Chrome/Edge for live voice; demo take works in any browser)
 cd apps/desktop-ui && npm install && npm run dev
+
+# End-to-end tests (import fixtures + fake-speech voice take, headless)
+cd apps/desktop-ui && npm run build && node e2e/run.mjs
+
+# Regenerate the WASM engine after touching crates/ (requires wasm32 target
+# + wasm-bindgen-cli 0.2.126; generated output is committed)
+./scripts/build-wasm.sh
 ```
 
-Click the pill to watch the demo take: countdown → tracking with word karaoke → thinking pause (PAUSED) → off-script ad-lib (LOST, amber, text holds still) → re-anchor → retake jump-back → end-of-script.
+In the app: import a script (or use the sample), click **Start with voice**, allow the mic, and read — the pill follows your voice. **Demo take** runs the scripted simulation (pause → ad-lib → retake) with no mic needed.
 
 ## The product in five features
 

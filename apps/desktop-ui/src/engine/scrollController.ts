@@ -26,6 +26,10 @@ export class ScrollController {
   private state: EngineState = "tracking";
   private started = false;
 
+  /** While not TRACKING the display freezes exactly where it is — retracting
+   * speculative drift back to the confirmed token reads as a glitch. */
+  private hold: number | null = null;
+
   onEvent(e: EngineEvent) {
     switch (e.kind) {
       case "cursorMoved":
@@ -37,9 +41,13 @@ export class ScrollController {
         this.confirmed = e.tokenIndex;
         this.confirmedAtMs = e.atMs;
         if (e.wpm > 0) this.wpm = e.wpm;
+        // A fresh engine fix releases any hold — including the re-anchor
+        // after LOST/SEARCHING, which the spring animates as one glide.
+        this.hold = null;
         break;
       case "stateChanged":
         this.state = e.to;
+        this.hold = e.to === "tracking" ? this.hold : this.position;
         break;
       case "jumpDetected":
         // The spring animates the snap; nothing else to do.
@@ -51,10 +59,15 @@ export class ScrollController {
   tick(nowMs: number, dtMs: number): number {
     const dt = Math.min(dtMs, 100) / 1000;
 
-    let target = this.confirmed;
-    if (this.state === "tracking" && this.started && this.wpm > 0) {
-      const driftWords = ((nowMs - this.confirmedAtMs) / 60000) * this.wpm;
-      target = this.confirmed + Math.min(driftWords, DEAD_RECKON_CAP_WORDS);
+    let target: number;
+    if (this.hold !== null) {
+      target = this.hold;
+    } else {
+      target = this.confirmed;
+      if (this.state === "tracking" && this.started && this.wpm > 0) {
+        const driftWords = ((nowMs - this.confirmedAtMs) / 60000) * this.wpm;
+        target = this.confirmed + Math.min(driftWords, DEAD_RECKON_CAP_WORDS);
+      }
     }
 
     // Critically damped spring (no overshoot, glides through corrections).
