@@ -5,6 +5,7 @@
 // animates to wherever the engine says.
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { isTauri, nudgeWindow } from "../engine/tauriEngine";
 import type { ScriptToken } from "../engine/liveEngine";
 import { ScrollController } from "../engine/scrollController";
 import type { EngineFeed, EngineState } from "../engine/types";
@@ -118,7 +119,7 @@ export function Pill({
       )}
       {(phase === "active" || phase === "done") && (
         <>
-          <div className="pill__stage">
+          <div className="pill__stage" data-tauri-drag-region>
             <Waveform state={engineState} done={phase === "done"} live={live} />
             <FocusWindow words={words} position={position} state={engineState} />
             {hiddenFromCapture && <span className="pill__ghost" title="Hidden from screen shares">⌀</span>}
@@ -126,6 +127,12 @@ export function Pill({
           {phase === "done" && <div className="pill__done">✓ End of script</div>}
           {expanded && (
             <div className="pill__controls">
+              {isTauri() && (
+                <>
+                  <button onClick={() => nudgeWindow(-60)} title="Move bubble left">◀</button>
+                  <button onClick={() => nudgeWindow(60)} title="Move bubble right">▶</button>
+                </>
+              )}
               <button onClick={restartSentence} title="Restart sentence (Ctrl+Alt+R)">⟲</button>
               <span className="pill__wpm">{wpm > 0 ? `${wpm} wpm` : "—"}</span>
               <span className={`pill__state pill__state--${engineState}`}>

@@ -15,6 +15,39 @@ New in Rev2:
 - **Script library** — import, edit, delete; stored locally (localStorage in the web build; the SQLite store backs the desktop build).
 - **End-to-end test rig** (`apps/desktop-ui/e2e/run.mjs`) — drives the built app in headless Chromium: imports real `.docx`/`.pdf`/`.txt` fixtures, verifies conversion, then runs a take with a scripted fake SpeechRecognition and asserts the WASM aligner tracks, holds through an ad-lib (LOST), and never retracts beyond the dead-reckoning cap. This rig caught and fixed a real engine bug (ad-lib garbage fuzzy-matching a backward anchor) and a UI bug (speculative-drift snap-back on lock loss).
 
+### Rev3 — the Windows app
+
+`apps/desktop-shell` is the Tauri v2 Windows shell: a frameless, transparent,
+always-on-top **bubble near the top of the screen**. Drag it anywhere (grab the
+`⠿` handle or the pill itself), or use the ◀ ▶ buttons in the pill's hover
+controls to nudge it left/right; position persists across runs. During a take
+the window shrinks to just the pill so the transparent area never blocks
+clicks in the apps underneath.
+
+Voice in the shell is **fully native and on-device**: WASAPI capture via cpal
+in **shared mode** — the microphone stays available to Zoom/Teams/OBS for the
+whole take (Flowly never opens it exclusively) — feeding a bundled Vosk
+English model and the same `flowly-align` engine. Audio never leaves the
+machine. If Windows blocks desktop apps from the mic, the picker says exactly
+which Settings toggle to flip.
+
+Build the installer from Linux (cross-compile) or Windows:
+
+```bash
+./scripts/fetch-vendor.sh    # Vosk DLL (from the PyPI wheel) + import lib + model
+./scripts/build-windows.sh   # cargo-xwin cross-compile + NSIS installer
+# → apps/desktop-shell/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+```
+
+Prereqs on Linux: `rustup target add x86_64-pc-windows-msvc`,
+`cargo install cargo-xwin`, `apt install nsis llvm`.
+
+Known Rev3 limitations: unsigned installer (SmartScreen will warn — "More
+info" → "Run anyway"); Vosk small model accuracy is below the planned
+sherpa-onnx Zipformer; no capture-exclusion toggle, tray, or global hotkeys
+yet; echo cancellation not wired (mute Flowly's mic sensitivity to far-end
+speech by using a headset).
+
 ### Rev1 — the engine and the pill
 
 The two components the plan says the product lives or dies on, built and tested:

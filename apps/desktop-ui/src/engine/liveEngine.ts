@@ -45,7 +45,7 @@ type RustEvent =
   | { StateChanged: { from: string; to: string } }
   | { JumpDetected: { from: number; to: number; kind: string } };
 
-function mapEvents(json: string, atMs: number): EngineEvent[] {
+export function mapEvents(json: string, atMs: number): EngineEvent[] {
   const out: EngineEvent[] = [];
   for (const e of JSON.parse(json) as RustEvent[]) {
     if ("CursorMoved" in e) {

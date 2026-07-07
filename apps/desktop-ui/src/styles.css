@@ -541,3 +541,43 @@ body {
   line-height: 1.55;
   color: #ff6961;
 }
+
+/* ---- Windows shell (transparent always-on-top bubble) -------------------- */
+
+.drag-handle {
+  display: none;
+}
+html.tauri .drag-handle {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 4px 0 2px;
+  cursor: grab;
+  user-select: none;
+}
+html.tauri body {
+  background: transparent;
+}
+html.tauri .camera-hint,
+html.tauri .demo-note {
+  display: none;
+}
+html.tauri .library {
+  margin-top: 6px;
+  width: calc(100% - 16px);
+  max-width: 704px;
+  background: rgba(12, 14, 18, 0.95);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 18px 22px 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+html.tauri .micsetup {
+  background: rgba(12, 14, 18, 0.95);
+}
+html.tauri .pill {
+  margin-top: 2px;
+}

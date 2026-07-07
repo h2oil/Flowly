@@ -1,0 +1,28 @@
+# Windows desktop shell. Deliberately OUTSIDE the workspace: it pulls in
+# Tauri (whose Linux host build needs webkit2gtk system libs) and is built
+# only for the x86_64-pc-windows-msvc target via cargo-xwin — see
+# scripts/build-windows.sh.
+[package]
+name = "flowly-shell"
+version = "0.1.0"
+edition = "2021"
+license = "UNLICENSED"
+
+[workspace]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+flowly-script = { path = "../../crates/flowly-script" }
+flowly-align = { path = "../../crates/flowly-align" }
+flowly-asr = { path = "../../crates/flowly-asr" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri = { version = "2", features = [] }
+cpal = "0.15"
+vosk = "0.3"
+
+[profile.release]
+strip = true
+lto = true

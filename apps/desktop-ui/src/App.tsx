@@ -9,6 +9,7 @@ import { compileTokens, LiveEngine, speechRecognitionAvailable, type ScriptToken
 import { SimEngine } from "./engine/simEngine";
 import { importFile, importPaste } from "./importer/import";
 import { loadScripts, newId, removeScript, upsertScript, wordCount, type LibScript } from "./library";
+import { isTauri, listMics, resizeForTake, TauriEngine } from "./engine/tauriEngine";
 import { MicSetup } from "./pill/MicSetup";
 import { Pill, type PromptEngine } from "./pill/Pill";
 
@@ -26,6 +27,9 @@ export default function App() {
 
   return (
     <div className="desktop">
+      <div className="drag-handle" data-tauri-drag-region>
+        ⠿ Flowly — drag to move
+      </div>
       <div className="camera-hint">webcam</div>
       {view.kind === "prompt" ? (
         <Prompter
@@ -71,11 +75,14 @@ function Prompter({
   onExit: () => void;
   onError: (message: string) => void;
 }) {
+  const tauri = isTauri();
   const [ready, setReady] = useState<{ tokens: ScriptToken[]; engine: PromptEngine } | null>(null);
-  // Voice takes go through the mic-check step first: explicit permission
-  // prompt, device picker, live level meter.
+  // Voice takes go through a mic step first. Web: explicit getUserMedia
+  // permission + picker + meter. Windows shell: native device picker (the
+  // engine captures via WASAPI shared mode — no browser permission model).
   const [stream, setStream] = useState<MediaStream | null>(null);
-  const needMic = mode === "voice" && !stream;
+  const [mic, setMic] = useState<string | null | undefined>(undefined);
+  const needMic = mode === "voice" && (tauri ? mic === undefined : !stream);
 
   useEffect(() => {
     if (needMic) return;
@@ -88,7 +95,12 @@ function Prompter({
           return;
         }
         let engine: PromptEngine;
-        if (mode === "voice") {
+        if (mode === "voice" && tauri) {
+          const native = new TauriEngine(script.body, mic ?? null);
+          native.onError = onError;
+          await native.prepare();
+          engine = native;
+        } else if (mode === "voice") {
           const live = new LiveEngine(script.body);
           live.onError = onError;
           live.stream = stream;
@@ -106,11 +118,90 @@ function Prompter({
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [script.id, mode, stream]);
+  }, [script.id, mode, stream, mic]);
 
-  if (needMic) return <MicSetup onReady={setStream} onCancel={onExit} />;
+  // In the shell, shrink the window to just the pill during a take so the
+  // transparent area never blocks clicks in the apps underneath.
+  useEffect(() => {
+    if (!tauri || !ready) return;
+    resizeForTake(true);
+    return () => resizeForTake(false);
+  }, [tauri, ready]);
+
+  if (needMic) {
+    return tauri ? (
+      <NativeMicSetup onReady={setMic} onCancel={onExit} />
+    ) : (
+      <MicSetup onReady={setStream} onCancel={onExit} />
+    );
+  }
   if (!ready) return <div className="pill pill--countdown">…</div>;
   return <Pill tokens={ready.tokens} engine={ready.engine} live={mode === "voice"} onExit={onExit} />;
+}
+
+/** Native mic picker (Windows shell). Capture is WASAPI shared mode: the mic
+ * stays available to Zoom/Teams/OBS for the whole take. */
+function NativeMicSetup({
+  onReady,
+  onCancel,
+}: {
+  onReady: (mic: string | null) => void;
+  onCancel: () => void;
+}) {
+  const [mics, setMics] = useState<string[] | null>(null);
+  const [choice, setChoice] = useState<string>("");
+
+  useEffect(() => {
+    listMics()
+      .then(setMics)
+      .catch(() => setMics([]));
+  }, []);
+
+  return (
+    <div className="micsetup" data-testid="mic-setup">
+      <h2>Microphone</h2>
+      {mics === null ? (
+        <p className="micsetup__hint">Looking for microphones…</p>
+      ) : mics.length === 0 ? (
+        <p className="micsetup__error">
+          No microphone found. If one is plugged in, allow desktop apps to use the microphone in
+          Windows Settings → Privacy &amp; security → Microphone, then try again.
+        </p>
+      ) : (
+        <>
+          <label className="micsetup__label">
+            Microphone
+            <select
+              className="micsetup__select"
+              value={choice}
+              onChange={(e) => setChoice(e.target.value)}
+            >
+              <option value="">System default</option>
+              {mics.map((m) => (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="micsetup__hint">
+            Flowly listens in shared mode — Zoom, Teams, and OBS keep using this microphone at the
+            same time. Recognition runs on this PC; audio never leaves your machine.
+          </p>
+        </>
+      )}
+      <div className="script__actions">
+        {mics !== null && mics.length > 0 && (
+          <button className="btn btn--primary" data-testid="mic-begin" onClick={() => onReady(choice || null)}>
+            Start prompting
+          </button>
+        )}
+        <button className="btn btn--quiet" onClick={onCancel}>
+          Back
+        </button>
+      </div>
+    </div>
+  );
 }
 
 // ---- library ---------------------------------------------------------------
@@ -129,7 +220,7 @@ function Library({
   const [editing, setEditing] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
-  const voiceOk = useMemo(() => speechRecognitionAvailable(), []);
+  const voiceOk = useMemo(() => isTauri() || speechRecognitionAvailable(), []);
 
   const addImported = useCallback(
     (title: string, body: string, warning?: string) => {
