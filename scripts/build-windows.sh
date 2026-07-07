@@ -8,4 +8,8 @@ npm --prefix apps/desktop-ui run build
 cd apps/desktop-shell
 export RUSTFLAGS="-L native=$(pwd)/vendor"
 export XWIN_ACCEPT_LICENSE=yes
-exec ../desktop-ui/node_modules/.bin/tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc "$@"
+../desktop-ui/node_modules/.bin/tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc --no-bundle "$@"
+# Package with plain makensis: Tauri's own NSIS bundler downloads helper DLLs
+# from GitHub releases, which some build environments block.
+makensis -V2 installer.nsi
+echo "Installer: $(pwd)/target/Flowly_0.1.0_x64-setup.exe"

@@ -51,4 +51,6 @@ cp vosk.lib libvosk.lib
 curl -sSL -o model.zip https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
 unzip -q -o model.zip && rm -f model.zip
 rm -rf model && mv vosk-model-small-en-us-0.15 model
+curl -sSL -o MicrosoftEdgeWebView2Setup.exe "https://go.microsoft.com/fwlink/p/?LinkId=2124703"
+
 echo "vendor ready:" && ls
