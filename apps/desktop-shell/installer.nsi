@@ -41,21 +41,16 @@ Section "Flowly" SecMain
   File "vendor\libstdc++-6.dll"
   File "vendor\libwinpthread-1.dll"
 
-  SetOutPath "$INSTDIR\model"
-  File /r "vendor\model\*.*"
-  SetOutPath "$INSTDIR"
-
-  ; WebView2 Evergreen runtime: preinstalled on Windows 11 and serviced
-  ; Windows 10; install silently only when missing.
-  ReadRegStr $0 HKCU "Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}" "pv"
-  ${If} $0 == ""
-    ReadRegStr $0 HKLM "SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}" "pv"
-  ${EndIf}
-  ${If} $0 == ""
-    DetailPrint "Installing Microsoft WebView2 runtime..."
-    InitPluginsDir
-    File /oname=$PLUGINSDIR\wv2setup.exe "vendor\MicrosoftEdgeWebView2Setup.exe"
-    ExecWait '"$PLUGINSDIR\wv2setup.exe" /silent /install'
+  ; Online step: fetch the ~40 MB on-device speech model (and the WebView2
+  ; runtime when missing). Keeps this installer small; after install the app
+  ; is fully offline.
+  DetailPrint "Downloading the on-device speech model (~40 MB)..."
+  InitPluginsDir
+  File /oname=$PLUGINSDIR\get-model.ps1 "get-model.ps1"
+  ExecWait 'powershell -NoProfile -ExecutionPolicy Bypass -File "$PLUGINSDIR\get-model.ps1" -Dest "$INSTDIR"' $0
+  ${If} $0 != 0
+    MessageBox MB_ICONSTOP "Couldn't download the speech model. Check your internet connection and run the installer again."
+    Abort
   ${EndIf}
 
   CreateShortcut "$SMPROGRAMS\Flowly.lnk" "$INSTDIR\${APP_EXE}"
