@@ -1,0 +1,70 @@
+# 02 — Features & UX
+
+## Design principles
+1. **Respect the CEO's time.** Members should get value in under 2 minutes a day. The app sends no infinite feeds and no engagement-bait notifications.
+2. **Quality over quantity.** A few strong introductions beat a thousand "connections".
+3. **Private by default.** Profiles are visible only to verified members. Sensitive fields such as revenue band and goals are shown only on mutual opt-in.
+4. **Concierge feel.** Every member has a named human **Member Success host**, reachable by in-app chat or WhatsApp.
+5. **Premium, calm design.** Dark and light themes, generous whitespace, an Arabic and English bilingual UI (Arabic shown right-to-left) from launch.
+
+## MVP features (Dubai launch)
+
+| # | Feature | What it does | Notes |
+|---|---|---|---|
+| 1 | **Verified onboarding** | LinkedIn, CV or experience routes, verification and human review ([01](01-product-and-membership.md)) | Shows live status: *Submitted → In review → Approved* |
+| 2 | **CEO profile** | Photo, title, company, sector, stage, bio, "currently focused on", goals (private), "can help with", languages, city | AI drafts a first version from LinkedIn or CV data; the member edits it |
+| 3 | **Weekly intros** | Each Sunday morning (the Dubai work week starts Monday) a member gets **3 suggested CEOs**, each with a one-line reason: *"Both scaling logistics into KSA"* | **Double opt-in**: chat opens only if both tap "Meet" |
+| 4 | **Messaging** | One-to-one chat after a mutual intro; scheduling shortcut to share a calendar link or propose a coffee | No cold DMs between members who haven't matched, except inside a Circle |
+| 5 | **Circles** | Groups of 8–40 members by sector, stage or topic, each with a member host. Has threads, a pinned agenda and a monthly meetup | Starts with about 12 seeded Circles |
+| 6 | **Events** | Invite-only dinners, breakfasts and roundtables. RSVP, waitlist, guest list (members only), QR check-in, post-event "who did you meet" for warm follow-ups | Events are sponsor-funded, so free to members |
+| 7 | **Asks & Offers** | Short posts: *"Ask: intro to a hospital group CFO in Riyadh"* or *"Offer: happy to share our ERP rollout lessons"*. Members respond privately | Fully moderated, with a strict no-selling rule |
+| 8 | **Member directory and search** | Filter by sector, stage, city and "can help with" | Each member can be fully hidden from the directory, so they only appear through intros |
+| 9 | **Notifications** | Weekly digest plus real-time alerts for mutual intros, messages and event invites only | Quiet hours on by default |
+| 10 | **Admin console (web)** | Verification queue, trust score explainer, member management, intro overrides, event builder, Circles, moderation queue, partner records | Built for 2–4 Member Success staff |
+
+## Post-MVP features (months 6–18)
+- **Trusted Advisor marketplace.** Vetted law firms, banks, auditors and specialist consultants. Members can **search** them and **request a proposal**, but advisors can't message members first.
+- **Capital Partner access.** Founders who opt in as "raising" can be found by verified Capital Partners (VCs, PE, family offices), who send a request through the app that the founder accepts or declines.
+- **Board & NED marketplace.** Members flag "open to board seats". Companies and search partners post board roles.
+- **Deal rooms.** Private, NDA-gated shared spaces for member-to-member partnerships or M&A talks, with file sharing and audit logs.
+- **City Passport.** When a member travels, they see who in the destination city is open to meeting. This is key once the network has more than one city.
+- **CEO Pulse.** A quarterly anonymous survey that feeds the aggregate insight reports ([03](03-business-model.md)).
+- **AI Chief-of-Staff (opt-in).** Prepares a 1-page brief before every intro or meeting ("What you have in common, three questions to ask") and drafts follow-ups.
+- **Audio rooms and "Office hours."** Short scheduled sessions where a member hosts Q&A on their expertise.
+
+## Matching engine (weekly intros)
+
+**v1, months 0–6: rules, embeddings and a human curator**
+1. **Candidate pool:** active, verified members in the same city, or members of either city who are travelling. Exclude previous matches, blocked members and members of the same company.
+2. **Score** = weighted mix of:
+   - *complementary goals*: my "looking for" matches their "can help with" (highest weight);
+   - *shared goal*: both are "entering KSA";
+   - *sector adjacency*: supply chain, customer and partner sectors;
+   - *stage proximity*;
+   - *embedding similarity* of bio and focus text, using an LLM embedding model;
+   - *novelty*: a boost for members outside the usual sector bubble;
+   - *responsiveness*: a penalty for members who ignore intros.
+3. **A curator reviews** the top suggestions for the first several hundred members. This creates a training signal and keeps quality high.
+4. **The reason line** is generated by an LLM from structured overlaps and checked against a template so it never invents facts.
+
+**v2, after about 1,000 members:** a learning-to-rank model trained on accept and meet outcomes, plus post-meeting feedback ("Was this intro valuable? 1–5").
+
+## Key screens
+
+1. **Welcome:** brand film still, "Continue with LinkedIn" (primary), "Request membership with CV", "I have an invitation code".
+2. **Application status:** timeline, the host's name and photo, "add more proof" button.
+3. **Home (This Week):** 3 intro cards, upcoming event, one Circle highlight, Asks you might help with.
+4. **Intro card:** photo, name, title, company, reason line, "Meet" / "Not now".
+5. **Profile:** hero, badges, focus, can-help-with, Circles, mutual connections, "Request intro via host".
+6. **Events:** list and detail, RSVP, guest list, check-in QR, partner credit ("Hosted with ___"), shown subtly.
+7. **Circles:** list, Circle home with threads, members and next meetup.
+8. **Asks & Offers:** feed filtered by relevance, compose sheet with an anti-sales checklist.
+9. **Inbox:** mutual intros and Circle DMs.
+10. **Settings:** privacy controls (directory visibility, field-level sharing), notification schedule, data export and delete.
+
+## Member code (shown at onboarding and in Settings)
+1. **No selling.** Don't pitch members unless they ask.
+2. **Chatham House Rule** for all Circles and events.
+3. **Answer intros within 7 days**, even with "not now".
+4. **What's shared here stays here.** No screenshots or forwarding of Circle content.
+5. **Breaches mean a warning, then removal.** Three ignored intros in a row pause new intros automatically.

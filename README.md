@@ -1,3 +1,5 @@
+> **🔀 Direction change (Nov 2026):** this repository is pivoting from the Flowly teleprompter to a **verified, free, invite-only networking app for CEOs**, launching in Dubai. The full plan is in [`docs/ceo-network/`](docs/ceo-network/00-overview.md). The teleprompter code below is kept for reference until the new app is scaffolded.
+
 # Flowly
 
 **A voice-following teleprompter for Windows that lives in a Dynamic-Island-style pill just below your webcam.**
