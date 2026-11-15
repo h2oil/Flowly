@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="800" height="240">
+  <rect width="400" height="120" fill="#FFFFFF"/>
+  <g transform="translate(10,10)">
+    <defs><linearGradient id="bglight" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#132A40"/><stop offset="1" stop-color="#08131F"/></linearGradient></defs>
+    <rect width="100" height="100" rx="22" fill="url(#bglight)"/>
+    <g transform="translate(5,2)"><path d="M30 30 C 28 50, 29 64, 33 78" fill="none" stroke="#C9A24B" stroke-width="9" stroke-linecap="round"/>
+  <path d="M30 30 C 46 20, 62 20, 76 29" fill="none" stroke="#C9A24B" stroke-width="9" stroke-linecap="round"/>
+  <path d="M31 52 C 42 44, 53 44, 64 49" fill="none" stroke="#E9D9B0" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="76" cy="29" r="4.5" fill="#F4E7C3"/></g>
+  </g>
+  <text x="130" y="80" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="64" font-weight="600" letter-spacing="-1.5" fill="#0B1B2B">flowly<tspan fill="#C9A24B">.</tspan></text>
+</svg>
