@@ -42,6 +42,7 @@ Majlis is a **mobile-first, verified-only network** where every member is a conf
 | 05 | [Technology & architecture](05-technology-and-architecture.md) | Stack, LinkedIn integration, CV parsing, data model, security |
 | 06 | [Trust, safety & legal](06-trust-safety-legal.md) | UAE PDPL and DIFC data law, regulated activities to avoid, moderation, company setup |
 | 07 | [Roadmap, KPIs & risks](07-roadmap-kpis-risks.md) | Phased timeline, team, metrics, risk register |
+| 08 | [App specification](08-app-spec.md) | Every screen and function: registration request, profile, chat (incl. City Lounge), connections, events, locations/Places, settings, notifications, release plan |
 
 ## MVP in one paragraph
 
