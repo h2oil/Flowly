@@ -2,13 +2,13 @@
 
 > **Pivot notice.** This plan replaces the Flowly teleprompter. The product is now a **verified, invite-only networking app for CEOs from every sector**. It is **free for members**, funded by partners, and **launches in Dubai** before rolling out city by city.
 >
-> Working name in this plan: **Majlis**. A *majlis* is the Gulf tradition of a sitting room where leaders meet. The name is a placeholder until trademark clearance; alternatives are in [01](01-product-and-membership.md#naming).
+> Product name: **Flowly**. It keeps the repository's brand and suggests effortless flow between peers. The logo is in [`docs/brand/`](../brand/). Trademark clearance is still required; see [01](01-product-and-membership.md#naming).
 
 ## Executive summary
 
 CEOs are the hardest people in any city to reach, and they have the fewest good places to meet each other. LinkedIn is full of sellers, recruiters and noise. Paid peer groups such as YPO, EO and Vistage are expensive, slow to join and built around fixed forums. WhatsApp groups don't scale and have no vetting.
 
-Majlis is a **mobile-first, verified-only network** where every member is a confirmed CEO, founder-CEO, managing director, country head or division CEO. Members get:
+Flowly is a **mobile-first, verified-only network** where every member is a confirmed CEO, founder-CEO, managing director, country head or division CEO. Members get:
 
 1. **Curated introductions.** A few high-quality, double-opt-in intros a week, matched on goals rather than titles.
 2. **Circles.** Small groups by sector, company stage and topic, such as "Family business succession" or "Scaling into KSA".

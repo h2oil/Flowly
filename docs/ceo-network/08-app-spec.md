@@ -174,11 +174,11 @@ Draft → Submitted → In review → (Needs more info ↺) → Approved → Onb
 
 | Type | Host | Size | Access |
 |---|---|---|---|
-| **Flagship** (city launch "100", annual summit) | Majlis + City Partners | 100–500 | Invite or apply; all members can apply |
-| **Partner dinner / roundtable** | Majlis + a sponsor | 12–40 | Curated invite list (matching picks the right mix), or apply |
+| **Flagship** (city launch "100", annual summit) | Flowly + City Partners | 100–500 | Invite or apply; all members can apply |
+| **Partner dinner / roundtable** | Flowly + a sponsor | 12–40 | Curated invite list (matching picks the right mix), or apply |
 | **Circle meetup** | Circle host | 6–20 | Circle members |
 | **Member-hosted meetup** | Any member (approved by staff) | 4–12 | Open to members or by invite: "Padel at 7am, DIFC", "Breakfast on scaling into KSA" |
-| **Online session** | Majlis / experts | Unlimited | Members; live video plus recording (v1.1) |
+| **Online session** | Flowly / experts | Unlimited | Members; live video plus recording (v1.1) |
 | **Experience** | Partner (yacht, desert, F1, art preview) | 10–30 | Apply; lottery if oversubscribed |
 | **Travel meetup** (City Passport) | Members visiting a city | 4–15 | Members in that city that week (v1.1) |
 
@@ -254,7 +254,7 @@ Draft → Submitted → In review → (Needs more info ↺) → Approved → Onb
 | **Capital** | Opt-in "raising" flag; verified Capital Partners can request an intro, which the member accepts or declines; investor office hours events | v1.1 |
 | **Board & NED roles** | "Open to board seats" flag; board roles posted by companies and licensed search partners; express interest | v2 |
 | **AI meeting brief** | Before any intro, meeting or event: a 1-page brief (common ground, 3 questions, recent company news) | v1.1 |
-| **AI assistant ("Ask Majlis")** | "Who in the network has expanded into Saudi logistics?" Returns members (respecting privacy settings) and suggests a host intro | v2 |
+| **AI assistant ("Ask Flowly")** | "Who in the network has expanded into Saudi logistics?" Returns members (respecting privacy settings) and suggests a host intro | v2 |
 | **CEO Pulse surveys** | 5-question quarterly survey in the app; members see the aggregate results first | v1.1 |
 | **Recognition** | "Most helpful" badges, Founding Member, Circle Host, event speaker | v1.1 |
 | **Language** | Full English and Arabic (right-to-left layout), auto-translate in chat | MVP (UI) / v1.1 (translate) |
@@ -328,7 +328,7 @@ saved_item(member_id, kind, ref_id)
 |---|---|---|
 | **MVP** (private beta → Dubai launch) | Months 3–6 | Registration request (all routes) + reviewer console · Profile + digital card · Weekly intros, connect requests, host intros · **Chat**: 1-to-1, small groups, Circles, **City Lounge**, event chat, concierge · **Events**: discover (list/calendar/map), RSVP modes, waitlist, tickets, check-in, "Who's here", post-event connect, member-hosted meetups · **Locations**: city and neighbourhood model, Places light (list + map + propose a meeting) · Asks & Offers · Directory · Notifications · Settings and privacy · English/Arabic UI |
 | **v1.1** | Months 7–12 | Trusted Advisors · Capital Partner access · City Passport (travel) · "I'm around" presence · Places full (perks + meeting room booking) · auto-translate · disappearing messages · polls · EA delegate · AI meeting briefs · online sessions + recordings · knowledge library · CEO Pulse · Global Lounge · Abu Dhabi |
-| **v2** | Months 12–24 | Deal rooms · board & NED marketplace · audio/video calls · end-to-end encryption · AI assistant "Ask Majlis" · seating plans · learning-to-rank matching · Riyadh and beyond |
+| **v2** | Months 12–24 | Deal rooms · board & NED marketplace · audio/video calls · end-to-end encryption · AI assistant "Ask Flowly" · seating plans · learning-to-rank matching · Riyadh and beyond |
 
 ## 13. MVP build estimate (team of 4 engineers + 1 designer)
 

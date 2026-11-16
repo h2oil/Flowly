@@ -1,12 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="800" height="240">
-  <rect width="400" height="120" fill="#0B1B2B"/>
-  <g transform="translate(10,10)">
-    <defs><linearGradient id="bgdark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#132A40"/><stop offset="1" stop-color="#08131F"/></linearGradient></defs>
-    <rect width="100" height="100" rx="22" fill="url(#bgdark)" stroke="#C9A24B" stroke-opacity="0.45" stroke-width="1.5"/>
-    <g transform="translate(5,2)"><path d="M30 30 C 28 50, 29 64, 33 78" fill="none" stroke="#C9A24B" stroke-width="9" stroke-linecap="round"/>
-  <path d="M30 30 C 46 20, 62 20, 76 29" fill="none" stroke="#C9A24B" stroke-width="9" stroke-linecap="round"/>
-  <path d="M31 52 C 42 44, 53 44, 64 49" fill="none" stroke="#E9D9B0" stroke-width="9" stroke-linecap="round"/>
-  <circle cx="76" cy="29" r="4.5" fill="#F4E7C3"/></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 176" width="870" height="528">
+  <rect width="290" height="176" fill="#0B1B2B"/>
+  <g transform="translate(32,12) skewX(-10)">
+    <path fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d=" M 8 98 C 20 90, 34 60, 40 35 C 44 18, 32 14, 30 30 C 28 60, 28 110, 26 132 C 25 145, 14 142, 20 128 C 26 112, 40 102, 50 96 C 60 85, 72 50, 72 32 C 72 18, 60 18, 62 36 C 63 60, 62 90, 68 98 C 72 102, 78 100, 82 92 C 86 80, 92 72, 100 70 C 88 68, 82 84, 86 94 C 90 102, 104 100, 106 86 C 108 76, 104 70, 100 70 C 104 72, 110 72, 116 70 C 116 80, 114 96, 122 99 C 130 101, 134 88, 136 74 C 136 88, 138 100, 146 99 C 154 98, 158 84, 158 70 C 160 74, 166 74, 172 72 C 180 64, 192 45, 192 30 C 192 16, 180 16, 182 34 C 183 60, 182 90, 188 98 C 192 102, 198 100, 202 92 C 203 82, 204 74, 206 70 C 204 84, 204 98, 212 99 C 220 100, 226 86, 226 70 C 226 100, 226 120, 220 138 C 214 152, 198 150, 204 136 C 210 122, 230 108, 250 96"/>
   </g>
-  <text x="130" y="80" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="64" font-weight="600" letter-spacing="-1.5" fill="#FFFFFF">flowly<tspan fill="#C9A24B">.</tspan></text>
 </svg>

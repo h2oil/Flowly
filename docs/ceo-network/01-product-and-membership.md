@@ -108,6 +108,6 @@ Trust score signals, combined into a score from 0 to 100:
 
 ## Naming
 
-Working name **Majlis**. Alternatives to test: **Peerage**, **The CEO Table**, **Summit Circle**, **Apex**, **Diwan**. Before committing:
+Chosen name: **Flowly**, with a cursive single-stroke wordmark and a gold cursive "f" app icon in `docs/brand/`. Fallbacks if clearance fails: **Majlis**, **Peerage**, **The CEO Table**, **Diwan**. Before committing:
 - Run trademark searches with the UAE Ministry of Economy, WIPO Global Brand Database, UK IPO and USPTO for classes 9, 35, 41 and 45.
 - Check App Store and Google Play name availability, plus the `.com` and `.ae` domains and social handles.

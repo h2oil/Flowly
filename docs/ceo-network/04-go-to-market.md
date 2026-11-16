@@ -20,7 +20,7 @@
 - 4 events, 8 seeded Circles, weekly intros running in the app.
 
 ### Phase 2: invite-only public launch (month 6)
-- **Launch moment:** a flagship "Majlis Dubai 100" evening with about 100 CEOs. Partner-hosted, with press under embargo (Gulf News, The National, Arabian Business, Forbes Middle East).
+- **Launch moment:** a flagship "Flowly Dubai 100" evening with about 100 CEOs. Partner-hosted, with press under embargo (Gulf News, The National, Arabian Business, Forbes Middle East).
 - **Waitlist plus invitations:** public waitlist with "jump the line" through a member invitation. Scarcity is real because every applicant is reviewed.
 - **Content engine:** "Dubai CEO Pulse #1" report, short video interviews with Founding Members, and the founder posting on LinkedIn. We use LinkedIn as a **distribution** channel even though the product is a deliberate alternative to it.
 - **Target:** 300 members by month 9 and 600 by month 12.
